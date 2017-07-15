@@ -28,6 +28,7 @@ mongoose.connect('mongodb://Laboratoria:Cxhfc4a9ANkrMX3i@laboratoria-shard-00-00
 
 app.use('/api/users', users);
 
+app.use(express.static(path.join(__dirname, '/client/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
