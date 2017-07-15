@@ -26,8 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect('mongodb://Laboratoria:Cxhfc4a9ANkrMX3i@laboratoria-shard-00-00-uarhm.mongodb.net:27017,laboratoria-shard-00-01-uarhm.mongodb.net:27017,laboratoria-shard-00-02-uarhm.mongodb.net:27017/laboratoria?ssl=true&replicaSet=Laboratoria-shard-0&authSource=admin');
 
-app.use('/users', users);
-app.use('/', index);
+app.use('/api/users', users);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
