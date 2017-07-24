@@ -5,10 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var Passport = require('passport');
+var AuthMiddleware = require('./auth/authmiddleware');
+var LocalSignUp = require('./auth/localsignup');
+var LocalSignIn = require('./auth/localsignin');
 
 //Routes
 var index = require('./routes/index');
 var users = require('./routes/users');
+var login = require('./routes/login');
+var wall  = require('./routes/wall'); 
 
 var app = express();
 
@@ -26,7 +32,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 mongoose.connect('mongodb://Laboratoria:Cxhfc4a9ANkrMX3i@laboratoria-shard-00-00-uarhm.mongodb.net:27017,laboratoria-shard-00-01-uarhm.mongodb.net:27017,laboratoria-shard-00-02-uarhm.mongodb.net:27017/laboratoria?ssl=true&replicaSet=Laboratoria-shard-0&authSource=admin');
 
+//Passport initialization
+app.use(Passport.initialize());
+Passport.use('local-signup', LocalSignUp);
+Passport.use('local-login', LocalSignIn);
+
+
+//Auth middleware, no-one can see api endpoints unless is someone registered and authentified
+app.use('/api', AuthMiddleware);
 app.use('/api/users', users);
+app.use('/api/wall', wall);
+app.use('/login', login);
 
 app.use(express.static(path.join(__dirname, '/client/build')));
 app.get('*', (req, res) => {
